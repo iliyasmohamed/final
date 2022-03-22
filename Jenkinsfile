@@ -1,10 +1,14 @@
-pipeline {
-    agent { dockerfile true }
-    stages {
-        stage('Test') {
-            steps {
-                sh 'node --version'
-            }
-        }
+node {
+    def app
+
+    stage('Clone repository') {
+              checkout scm
+    }
+
+    stage('Build image') {
+         app = docker.build("image-api:${env.BUILD_ID}")
+    }
+    stage('Test image') {
+        sh 'echo ${env.BUILD_ID}'
     }
 }
