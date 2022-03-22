@@ -6,7 +6,7 @@ node {
     }
 
     stage('Build image') {
-         app = docker.build("api-img-srvr/image-api:${env.BUILD_ID}")
+         app = docker.build("iliyasll/api-img-srvr/image-api:${env.BUILD_ID}")
     }
     stage('Test image') {
     }
