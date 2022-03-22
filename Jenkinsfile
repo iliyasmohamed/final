@@ -6,9 +6,13 @@ node {
     }
 
     stage('Build image') {
-         app = docker.build("image-api:${env.BUILD_ID}")
+         app = docker.build("api-img-srvr/image-api:${env.BUILD_ID}")
     }
     stage('Test image') {
-        sh 'echo ${env.BUILD_ID}'
     }
+    stage('Push image') {
+        docker.withRegistry('https://registry.hub.docker.com', 'git') {
+        app.push("latest")
+}
+}
 }
