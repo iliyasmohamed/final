@@ -26,13 +26,13 @@ spec:
 ---
 
 apiVersion: v1
-kind: Pod
+kind: Service
 metadata:
    name: api-img-srvr-service
 spec:
-   containers:
-   - name: img-container01
-     image: iliyasll/api-img-srvr:28
+   selector:
+      app: api-img-srvr   
+   type: LoadBalancer
      ports:
-     - containerPort: 3000
+     targetPort: 3000
      nodePort: 31110
