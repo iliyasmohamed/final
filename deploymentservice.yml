@@ -1,0 +1,38 @@
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-img-srvr-deployment
+  labels:
+    app: api-img-srvr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-img-srvr
+  template:
+    metadata:
+      labels:
+        app: api-img-srvr 
+    spec:
+      containers:
+      - name: apiimgserver
+        image: iliyasll/api-img-srvr:latest
+        ports:
+        - containerPort: 3000
+        
+        
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+   name: api-img-srvr-service
+spec:
+   containers:
+   - name: img-container01
+     image: iliyasll/api-img-srvr:28
+     ports:
+     - containerPort: 3000
+     nodePort: 31110
