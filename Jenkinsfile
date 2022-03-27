@@ -1,18 +1,49 @@
-node {
-    def app
+pipeline {
 
-    stage('Clone repository') {
-              checkout scm
+  environment {
+    dockerimagename = "iliyasll/api-img-srvr"
+    dockerImage = ""
+  }
+
+  agent any
+
+  stages {
+
+    stage('Checkout Source') {
+      steps {
+        git 'https://github.com/iliyasmohamed/final.git'
+      }
     }
 
     stage('Build image') {
-         app = docker.build("iliyasll/api-img-srvr:${env.BUILD_ID}")
+      steps{
+        script {
+          dockerImage = docker.build dockerimagename
+        }
+      }
     }
-    stage('Test image') {
+
+    stage('Pushing Image') {
+      environment {
+               registryCredential = 'dockerhublogin'
+           }
+      steps{
+        script {
+          docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+            dockerImage.push("latest")
+          }
+        }
+      }
     }
-    stage('Push image') {
-        docker.withRegistry('https://registry.hub.docker.com', 'git') {
-        app.push()
-}
-}
+
+    stage('Deploying App to Kubernetes') {
+      steps {
+        script {
+          kubernetesDeploy(configs: "deploymentservice.yml", kubeconfigId: "kubernetes")
+        }
+      }
+    }
+
+  }
+
 }
